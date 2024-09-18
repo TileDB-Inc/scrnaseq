@@ -17,6 +17,7 @@ include { softwareVersionsToYAML             } from '../subworkflows/nf-core/uti
 include { methodsDescriptionText             } from '../subworkflows/local/utils_nfcore_scrnaseq_pipeline'
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 include { getGenomeAttribute                 } from '../subworkflows/local/utils_nfcore_scrnaseq_pipeline'
+include { TILEDB_CREATE_SOMA } from '../subworkflows/local/tiledb_create_soma'
 
 
 
@@ -318,6 +319,11 @@ workflow SCRNASEQ {
         ch_txp2gene,
         ch_star_index
     )
+
+    // if create_soma is true, run the TILEDB_CREATE_SOMA subworkflow
+    if (params.tiledb_create_soma) {
+        TILEDB_CREATE_SOMA(params.tiledb_soma_uri)
+    }
 
     //Add Versions from MTX Conversion workflow too
     ch_versions.mix(MTX_CONVERSION.out.ch_versions)
