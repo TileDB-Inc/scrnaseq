@@ -18,6 +18,7 @@ include { methodsDescriptionText             } from '../subworkflows/local/utils
 include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 include { getGenomeAttribute                 } from '../subworkflows/local/utils_nfcore_scrnaseq_pipeline'
 include { TILEDB_CREATE_SOMA } from '../subworkflows/local/tiledb_create_soma'
+include { TILEDB_REGISTER_SOMA } from '../modules/local/tiledb_register_soma'
 
 
 
@@ -322,7 +323,11 @@ workflow SCRNASEQ {
 
     // if create_soma is true, run the TILEDB_CREATE_SOMA subworkflow
     if (params.tiledb_create_soma) {
-        TILEDB_CREATE_SOMA(params.tiledb_soma_uri)
+        // collect the h5ad files from MTX_CONVERSION.out.ch_h5ad_input, meta and files
+        ch_h5ad_files = MTX_CONVERSION.out.ch_h5ad_input.collect { meta, files -> [files] }
+        TILEDB_REGISTER_SOMA(params.tiledb_soma_uri,ch_h5ad_files)
+        //rd is json
+        TILEDB_CREATE_SOMA(params.tiledb_soma_uri, MTX_CONVERSION.out.ch_h5ad_input, TILEDB_REGISTER_SOMA.out.rd)
     }
 
     //Add Versions from MTX Conversion workflow too

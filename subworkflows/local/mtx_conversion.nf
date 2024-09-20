@@ -33,6 +33,7 @@ workflow MTX_CONVERSION {
             star_index
         )
 
+        ch_h5ad_input = MTX_TO_H5AD.out.h5ad
         //
         // Concat sample-specific h5ad in one
         //
@@ -44,11 +45,14 @@ workflow MTX_CONVERSION {
             ch_concat_h5ad_input = ch_concat_h5ad_input.map{ type, matrices -> [ type, matrices.flatten().toList() ] }
         }
         if (params.concat_h5ad) {
-        CONCAT_H5AD (
-            ch_concat_h5ad_input,
-            samplesheet
-        )
+            CONCAT_H5AD (
+                ch_concat_h5ad_input,
+                samplesheet
+            )
+            ch_concat_h5ad_ouput = CONCAT_H5AD.out.h5ad
         }
+
+        
         //
         // Convert matrix do seurat
         //
@@ -61,6 +65,8 @@ workflow MTX_CONVERSION {
 
     emit:
     ch_versions
+    ch_h5ad_input
+    ch_concat_h5ad_input
     // counts = MTX_TO_H5AD.out.counts  was this ever used?
 
 }
