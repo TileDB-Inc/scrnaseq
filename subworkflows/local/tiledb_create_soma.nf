@@ -7,10 +7,9 @@ workflow TILEDB_CREATE_SOMA {
         rd
 
     main:
-        
         TILEDB_CREATE (
             s3_uri,
-            h5ad_file_ch
+            h5ad_file_ch,
             rd
         )
 }
