@@ -5,6 +5,16 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "anndata/barcodes": {
+                        "branch": "master",
+                        "git_sha": "05e4d643e8a9cd600fdce51dccdfc68cf9a72489",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata"]
+                    },
+                    "cellbender/removebackground": {
+                        "branch": "master",
+                        "git_sha": "e01435f46b46adff59546d6a4b4002e31f6c4457",
+                        "installed_by": ["h5ad_removebackground_barcodes_cellbender_anndata", "modules"]
+                    },
                     "cellranger/count": {
                         "branch": "master",
                         "git_sha": "90dad5491658049282ceb287a3d7732c1ce39837",
@@ -47,7 +57,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
+                        "git_sha": "08108058ea36a63f141c25c4e75f9f872a5b2296",
                         "installed_by": ["modules"]
                     },
                     "gffread": {
@@ -72,17 +82,22 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b80f5fd12ff7c43938f424dd76392a2704fa2396",
+                        "git_sha": "f0719ae309075ae4a291533883847c3f7c441dad",
+                        "installed_by": ["modules"]
+                    },
+                    "simpleaf/index": {
+                        "branch": "master",
+                        "git_sha": "4ce8f451b1c44e02f5846b39276f5c501ca199ac",
+                        "installed_by": ["modules"]
+                    },
+                    "simpleaf/quant": {
+                        "branch": "master",
+                        "git_sha": "4ce8f451b1c44e02f5846b39276f5c501ca199ac",
                         "installed_by": ["modules"]
                     },
                     "star/genomegenerate": {
                         "branch": "master",
                         "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
-                        "installed_by": ["modules"]
-                    },
-                    "universc": {
-                        "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
                     "unzip": {
@@ -94,19 +109,24 @@
             },
             "subworkflows": {
                 "nf-core": {
+                    "h5ad_removebackground_barcodes_cellbender_anndata": {
+                        "branch": "master",
+                        "git_sha": "23600f6cd1c7fc4da79709bb531e5ba3cd5e840e",
+                        "installed_by": ["subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "c2b22d85f30a706a3073387f30380704fcae013b",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "92de218a329bfc9a9033116eb5f65fd270e72ba3",
+                        "git_sha": "51ae5406a030d4da1e49e4dab49756844fdd6c7a",
                         "installed_by": ["subworkflows"]
                     },
-                    "utils_nfvalidation_plugin": {
+                    "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
+                        "git_sha": "2fd2cd6d0e7b273747f32e465fdc6bcc3ae0814e",
                         "installed_by": ["subworkflows"]
                     }
                 }

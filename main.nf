@@ -9,14 +9,13 @@
 ----------------------------------------------------------------------------------------
 */
 
-nextflow.enable.dsl = 2
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_scrnaseq_pipeline'
 include { SCRNASEQ                } from './workflows/scrnaseq'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_scrnaseq_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_scrnaseq_pipeline'
@@ -26,7 +25,16 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_scrn
     GENOME PARAMETER VALUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-// we cannot modify params. here, we must load the files
+
+// Params cannot be changed if they have been set beforehand
+// Thus, manually provided files are not overwritten by the genome attributes
+params.fasta            = getGenomeAttribute('fasta')
+params.gtf              = getGenomeAttribute('gtf')
+params.simpleaf_index   = getGenomeAttribute('simpleaf') ?: getGenomeAttribute('salmon')
+params.txp2gene         = getGenomeAttribute('simpleaf_txp2gene')
+params.cellranger_index = params.aligner == 'cellrangerarc' ?
+                            getGenomeAttribute('cellrangerarc') :
+                            getGenomeAttribute('cellranger')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,10 +58,8 @@ workflow NFCORE_SCRNASEQ {
     SCRNASEQ (
         samplesheet,
     )
-
     emit:
     multiqc_report = SCRNASEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
-
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,13 +70,11 @@ workflow NFCORE_SCRNASEQ {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
@@ -84,7 +88,6 @@ workflow {
     NFCORE_SCRNASEQ (
         PIPELINE_INITIALISATION.out.samplesheet,
     )
-
     //
     // SUBWORKFLOW: Run completion tasks
     //

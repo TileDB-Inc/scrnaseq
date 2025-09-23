@@ -1,5 +1,6 @@
 /* --    IMPORT LOCAL MODULES/SUBWORKFLOWS     -- */
-include { STAR_ALIGN }                  from '../../modules/local/star_align'
+include { STAR_ALIGN  } from '../../modules/local/star_align'
+include { MTX_TO_H5AD } from '../../modules/local/mtx_to_h5ad'
 
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
 include { GUNZIP }                      from '../../modules/nf-core/gunzip/main'
@@ -53,14 +54,26 @@ workflow STARSOLO {
     )
     ch_versions = ch_versions.mix(STAR_ALIGN.out.versions)
 
+    raw_counts = STAR_ALIGN.out.raw_counts
+        .join(STAR_ALIGN.out.raw_velocyto, remainder: true)
+        .map{ meta, count, velocity -> {
+                return [meta + [input_type: 'raw'], velocity ? [count, velocity] : [count]]
+            }
+        }
+
+    filtered_counts = STAR_ALIGN.out.filtered_counts
+        .join(STAR_ALIGN.out.filtered_velocyto, remainder: true)
+        .map{ meta, count, velocity -> {
+                return [meta + [input_type: 'filtered'], velocity ? [count, velocity] : [count]]
+            }
+        }
 
     emit:
     ch_versions
     // get rid of meta for star index
-    star_index  = star_index.map{ meta, index -> index }
-    star_result = STAR_ALIGN.out.tab
-    star_counts = STAR_ALIGN.out.counts
-    raw_counts = STAR_ALIGN.out.raw_counts
-    filtered_counts = STAR_ALIGN.out.filtered_counts
-    for_multiqc = STAR_ALIGN.out.log_final.map{ meta, it -> it }
+    star_result     = STAR_ALIGN.out.tab
+    star_counts     = STAR_ALIGN.out.counts
+    raw_counts      = raw_counts
+    filtered_counts = filtered_counts
+    for_multiqc     = STAR_ALIGN.out.log_final.map{ meta, it -> it }
 }
