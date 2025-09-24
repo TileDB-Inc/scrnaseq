@@ -6,7 +6,7 @@ process TILEDB_CREATE {
     conda "conda-forge::tiledb tiledb::tiledbsoma-py"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/tiledb-soma:latest' :
-        'dockerhub/tiledbsoma-py:latest' }"
+        'leipzig/tiledb-soma-py:latest' }"
 
     input:
     val s3_url

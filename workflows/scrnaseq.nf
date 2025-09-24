@@ -1,27 +1,3 @@
-<<<<<<< HEAD
-include { MULTIQC                            } from '../modules/nf-core/multiqc/main'
-include { FASTQC_CHECK                       } from '../subworkflows/local/fastqc'
-include { KALLISTO_BUSTOOLS                  } from '../subworkflows/local/kallisto_bustools'
-include { SCRNASEQ_ALEVIN                    } from '../subworkflows/local/alevin'
-include { STARSOLO                           } from '../subworkflows/local/starsolo'
-include { CELLRANGER_ALIGN                   } from "../subworkflows/local/align_cellranger"
-include { CELLRANGER_MULTI_ALIGN             } from "../subworkflows/local/align_cellrangermulti"
-include { CELLRANGERARC_ALIGN                } from "../subworkflows/local/align_cellrangerarc"
-include { UNIVERSC_ALIGN                     } from "../subworkflows/local/align_universc"
-include { MTX_CONVERSION                     } from "../subworkflows/local/mtx_conversion"
-include { GTF_GENE_FILTER                    } from '../modules/local/gtf_gene_filter'
-include { EMPTYDROPS_CELL_CALLING            } from '../modules/local/emptydrops'
-include { GUNZIP as GUNZIP_FASTA             } from '../modules/nf-core/gunzip/main'
-include { GUNZIP as GUNZIP_GTF               } from '../modules/nf-core/gunzip/main'
-include { paramsSummaryMultiqc               } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML             } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText             } from '../subworkflows/local/utils_nfcore_scrnaseq_pipeline'
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-include { getGenomeAttribute                 } from '../subworkflows/local/utils_nfcore_scrnaseq_pipeline'
-include { TILEDB_CREATE_SOMA } from '../subworkflows/local/tiledb_create_soma'
-include { TILEDB_REGISTER_SOMA } from '../modules/local/tiledb_register_soma'
-
-=======
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
@@ -46,8 +22,8 @@ include { GTF_GENE_FILTER                                   } from '../modules/l
 include { GUNZIP as GUNZIP_FASTA                            } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_GTF                              } from '../modules/nf-core/gunzip/main'
 include { H5AD_CONVERSION                                   } from '../subworkflows/local/h5ad_conversion'
->>>>>>> origin
-
+include { TILEDB_CREATE_SOMA } from '../subworkflows/local/tiledb_create_soma'
+include { TILEDB_REGISTER_SOMA } from '../modules/local/tiledb_register_soma'
 
 workflow SCRNASEQ {
 
@@ -316,11 +292,15 @@ workflow SCRNASEQ {
 
     // if create_soma is true, run the TILEDB_CREATE_SOMA subworkflow
     if (params.tiledb_create_soma) {
-        // collect the h5ad files from MTX_CONVERSION.out.ch_h5ad_input, meta and files
-        //ch_h5ad_files = MTX_CONVERSION.out.ch_h5ad_input.collect { meta, files -> [files] }
-        TILEDB_REGISTER_SOMA(params.tiledb_soma_uri,ch_h5ads)
-        //rd is json
-        TILEDB_CREATE_SOMA(params.tiledb_soma_uri, ch_h5ads, TILEDB_REGISTER_SOMA.out.rd)
+        if (params.tiledb_soma_uri) {
+            // collect the h5ad files from MTX_CONVERSION.out.ch_h5ad_input, meta and files
+            //ch_h5ad_files = MTX_CONVERSION.out.ch_h5ad_input.collect { meta, files -> [files] }
+            TILEDB_REGISTER_SOMA(params.tiledb_soma_uri,ch_h5ads)
+            //rd is json
+            TILEDB_CREATE_SOMA(params.tiledb_soma_uri, ch_h5ads, TILEDB_REGISTER_SOMA.out.rd)
+        } else {
+            log.warn "TileDB SOMA creation is enabled but no URI provided. Skipping TileDB processing."
+        }
     }
 
     //
