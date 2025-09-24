@@ -96,22 +96,6 @@
                     "type": "boolean",
                     "deprecated": true,
                     "errorMessage": "Parameter has been deprecated in favour of --skip_cellbender to properly match name of workflow."
-                },
-                "concat_h5ad": {
-                    "type": "boolean",
-                    "description": "Concatenate h5ad files into a single h5ad file."
-                },
-                "tiledb_create_soma": {
-                    "type": "boolean",
-                    "description": "Create a SOMA object in TileDB."
-                },
-                "tiledb_soma_uri": {
-                    "type": ["string", "null"],
-                    "description": "URI for the TileDB SOMA object."
-                },
-                "tiledb_ingest_h5ads": {
-                    "type": "boolean",
-                    "description": "Ingest h5ad files into TileDB."
                 }
             }
         },
@@ -386,6 +370,30 @@
                 }
             }
         },
+        "tiledb_options": {
+            "title": "TileDB options",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Parameters for TileDB integration and SOMA object creation.",
+            "properties": {
+                "concat_h5ad": {
+                    "type": "boolean",
+                    "description": "Concatenate h5ad files into a single h5ad file."
+                },
+                "tiledb_create_soma": {
+                    "type": "boolean",
+                    "description": "Create a SOMA object in TileDB."
+                },
+                "tiledb_soma_uri": {
+                    "type": ["string", "null"],
+                    "description": "URI for the TileDB SOMA object."
+                },
+                "tiledb_ingest_h5ads": {
+                    "type": "boolean",
+                    "description": "Ingest h5ad files into TileDB."
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -563,6 +571,9 @@
         },
         {
             "$ref": "#/$defs/cellranger_multi_options"
+        },
+        {
+            "$ref": "#/$defs/tiledb_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
