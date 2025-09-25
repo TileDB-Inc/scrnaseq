@@ -386,7 +386,9 @@
                 },
                 "tiledb_soma_uri": {
                     "type": ["string", "null"],
-                    "description": "URI for the TileDB SOMA object."
+                    "description": "URI for the TileDB SOMA object. Specify the path where the SOMA object should be created or stored.",
+                    "help_text": "This parameter specifies the URI (path) where the TileDB SOMA object will be created or accessed. Can be a local file path (e.g., '/path/to/soma/data') or a cloud storage URI (e.g., 's3://bucket/soma/data'). If not specified (null), a default location will be used.",
+                    "fa_icon": "fas fa-link"
                 },
                 "tiledb_ingest_h5ads": {
                     "type": "boolean",
